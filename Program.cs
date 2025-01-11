@@ -1,16 +1,20 @@
 using Prueba_YamaAndrade.Data;
 using Microsoft.EntityFrameworkCore;
-
+using Prueba_YamaAndrade.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+// Registrar DbContext para acceder a la base de datos
 builder.Services.AddDbContext<AppDBContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DFYAConnection"));
 });
+
+// Registrar el servicio PersonaService
+builder.Services.AddScoped<PersonaService>();
 
 var app = builder.Build();
 
