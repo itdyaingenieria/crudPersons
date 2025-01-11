@@ -1,0 +1,66 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model List<Prueba_YamaAndrade.Models.Persona>;
+
+    <div class="row">
+        <div class="col-sm-8 offset-sm-2">
+            <h2>Listado de Personas</h2>
+            <a asp-controller="Persona" asp-action="Nuevo" class="btn btn-success mb-3" title="Crear nueva persona">Nuevo</a>
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Nombres</th>
+                    <th>Apellidos</th>
+                    <th>Identificación</th>
+                    <th>Género</th>
+                    <th>Fecha Nacimiento</th>
+                    <th>Contraseña</th>
+                    <th>Activo</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                    @foreach(var person in Model)
+                    {
+                        <tr>
+                            <td>@person.IdPersona</td>
+                            <td>@person.Nombres</td>
+                            <td>@person.Apellidos</td>
+                            <td>@person.Identificacion</td>
+                            <td>@person.Genero</td>
+                            <td>@person.Fecha_nacimiento.ToString("dd/MM/yyyy")</td>
+                            <td>@person.Contrasena</td>
+                            <td>@(person.Activo ? "SI" : "NO")</td>
+                        <td>
+                            <a class="btn btn-primary btn-sm" href="/Persona/Editar/@person.IdPersona" title="Editar registro">
+                                <i class="fas fa-edit"></i> 
+                            </a>
+                            <a class="btn btn-danger btn-sm" 
+                            href="/Persona/Eliminar/@person.IdPersona" 
+                            title="Elimianr registro"
+                            onclick="return confirmar()"
+                            >
+                                <i class="fas fa-trash"></i> 
+                            </a>
+                        </td>
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    @section Scripts{
+        <script>
+            function confirmar(){
+                return confirm("Esta seguro de eliminar esta Persona?")
+            }
+        </script>
+    }
