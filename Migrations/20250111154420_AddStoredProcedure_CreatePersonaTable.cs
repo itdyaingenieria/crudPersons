@@ -13,20 +13,27 @@ namespace Prueba_YamaAndrade.Migrations
         {
             // Crear el procedimiento almacenado en la base de datos
             migrationBuilder.Sql(@"
-            CREATE PROCEDURE CrearTablaPersona
-                @nuevoNombreTabla NVARCHAR(128)
-            AS
-            BEGIN
-                DECLARE @sql NVARCHAR(MAX)
+             CREATE PROCEDURE CrearTablaPersona
+                @nuevoNombreTabla NVARCHAR(255)
+             AS
+             BEGIN
+                DECLARE @sql NVARCHAR(MAX);
 
-                -- Crear la nueva tabla con la misma estructura que la tabla persona
-                SET @sql = 'SELECT * INTO ' + QUOTENAME(@nuevoNombreTabla) + ' FROM persona WHERE 1 = 0;'
-                EXEC sp_executesql @sql;
+                -- Verificar si la tabla ya existe
+                IF NOT EXISTS (SELECT 1 FROM sys.tables WHERE name = @nuevoNombreTabla)
+                BEGIN
+                    -- Si no existe, crear la nueva tabla (sin la columna IDENTITY)
+                    SET @sql = 'SELECT IdPersona, Nombres, Apellidos, Identificacion, Genero, Fecha_nacimiento, Contrasena, Activo
+                                INTO ' + @nuevoNombreTabla + '
+                                FROM Personas';
+                    EXEC sp_executesql @sql;
+                END
 
-                -- Insertar los registros de la tabla persona en la nueva tabla
-                SET @sql = 'INSERT INTO ' + QUOTENAME(@nuevoNombreTabla) + ' SELECT * FROM persona;'
+                -- Crear la clave primaria en la nueva tabla
+                SET @sql = 'ALTER TABLE ' + @nuevoNombreTabla + '
+                            ADD CONSTRAINT PK_' + @nuevoNombreTabla + ' PRIMARY KEY (IdPersona)';
                 EXEC sp_executesql @sql;
-            END
+             END;
         ");
         }
 

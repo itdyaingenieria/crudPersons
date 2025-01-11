@@ -81,7 +81,7 @@ namespace Prueba_YamaAndrade.Controllers
         public IActionResult CrearTabla()
         {
             // Generar un nombre único para la tabla (por ejemplo, basado en la fecha y hora)
-            string nuevoNombreTabla = "PersonaCopia_" + DateTime.Now.ToString("yyyyMMddHHmmss");
+            string nuevoNombreTabla = "PersonasCopia_" + DateTime.Now.ToString("yyyyMMddHHmmss");
 
             // Llamar al servicio para ejecutar el procedimiento almacenado
             _personaService.CrearTablaPersona(nuevoNombreTabla);

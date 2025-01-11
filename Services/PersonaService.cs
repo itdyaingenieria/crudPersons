@@ -17,7 +17,7 @@ namespace Prueba_YamaAndrade.Services
             var sql = "EXEC CrearTablaPersona @nuevoNombreTabla";
 
             // Ejecutar el procedimiento almacenado
-            _appDbContext.Database.ExecuteSqlRaw(sql, new { nuevoNombreTabla });
+            _appDbContext.Database.ExecuteSqlRaw(sql, new Microsoft.Data.SqlClient.SqlParameter("@nuevoNombreTabla", nuevoNombreTabla));
         }
     }
 }
