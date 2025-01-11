@@ -109,7 +109,7 @@ namespace Prueba_YamaAndrade.Controllers
             try
             {
                 // Llama al servicio o lógica para crear la tabla
-                _personaService.CrearTablaPersona($"PersonaCopia_{DateTime.Now:yyyyMMddHHmmss}");
+                _personaService.CrearTablaPersona($"PersonasCopia_{DateTime.Now:yyyyMMddHHmmss}");
                  return Json(new { success = true, message = "La copia de la tabla se realizó exitosamente." });
             }
             catch (Exception ex)
