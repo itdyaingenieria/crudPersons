@@ -17,7 +17,7 @@ Antes de ejecutar el proyecto, asegúrate de tener instalado:
 
 1. **Clonar el repositorio**  
    ```bash
-   git clone <URL_DEL_REPOSITORIO>
+   git clone https://github.com/itdyaingenieria/crudPersons.git
    cd <NOMBRE_DEL_PROYECTO>
    ```
 
