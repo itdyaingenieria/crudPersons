@@ -2,16 +2,21 @@
 using Prueba_YamaAndrade.Data;
 using Prueba_YamaAndrade.Models;
 using Microsoft.EntityFrameworkCore;
+using Prueba_YamaAndrade.Services;
 
 namespace Prueba_YamaAndrade.Controllers
 {
     public class PersonaController : Controller
     {
         private readonly AppDBContext _appDbContext;
-        public PersonaController(AppDBContext appDbContext)
+        private readonly PersonaService _personaService;
+
+        public PersonaController(AppDBContext appDbContext, PersonaService personaService)
         {
             _appDbContext = appDbContext;
+            _personaService = personaService;
         }
+
         [HttpGet]
         public async Task<IActionResult> Listar()
         {
@@ -70,6 +75,18 @@ namespace Prueba_YamaAndrade.Controllers
             }
 
             return View(persona);
+        }
+
+
+        public IActionResult CrearTabla()
+        {
+            // Generar un nombre único para la tabla (por ejemplo, basado en la fecha y hora)
+            string nuevoNombreTabla = "PersonaCopia_" + DateTime.Now.ToString("yyyyMMddHHmmss");
+
+            // Llamar al servicio para ejecutar el procedimiento almacenado
+            _personaService.CrearTablaPersona(nuevoNombreTabla);
+
+            return RedirectToAction("Listar"); // Redirigir a la lista de personas
         }
     }
 }
