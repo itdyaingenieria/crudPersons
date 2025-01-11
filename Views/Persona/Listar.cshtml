@@ -13,8 +13,12 @@
             <button type="button" id="crearTablaBtn" class="btn btn-primary">Crear Copia Tabla</button>
         </form>
 
-        <!-- Contenedor para el mensaje -->
+        <!-- Contenedores para el mensaje -->
         <div id="mensaje" class="mt-3"></div>
+        @if (!string.IsNullOrEmpty(ViewBag.Mensaje))
+        {
+            <div class="alert alert-success">@ViewBag.Mensaje</div>
+        }
 
         <table class="table table-bordered">
             <thead>
@@ -46,9 +50,10 @@
                             <a class="btn btn-primary btn-sm" href="/Persona/Editar/@person.IdPersona" title="Editar registro">
                                 <i class="fas fa-edit"></i>
                             </a>
-                            <a class="btn btn-danger btn-sm" href="/Persona/Eliminar/@person.IdPersona" title="Eliminar registro" onclick="return confirmar()">
+                            <a class="btn btn-danger btn-sm eliminar-btn" href="javascript:void(0);" data-id="@person.IdPersona" title="Eliminar registro">
                                 <i class="fas fa-trash"></i>
                             </a>
+
                         </td>
                     </tr>
                 }
@@ -62,12 +67,10 @@
     <script>
         $(document).ready(function () {
             $('#crearTablaBtn').click(function () {
-                // Envía una solicitud AJAX para crear la tabla
                 $.ajax({
                     url: $('#crearTablaForm').attr('action'),
                     type: 'POST',
                     success: function (response) {
-                        // Muestra el mensaje basado en la respuesta
                         if (response.success) {
                             $('#mensaje').html('<div class="alert alert-success">' + response.message + '</div>');
                         } else {
@@ -75,15 +78,36 @@
                         }
                     },
                     error: function () {
-                        // Manejo de errores genéricos
                         $('#mensaje').html('<div class="alert alert-danger">Ocurrió un error al intentar crear la copia de la tabla.</div>');
                     }
                 });
             });
+
+            $('.eliminar-btn').click(function () {
+            var personaId = $(this).data('id'); 
+
+            // Confirmar eliminación
+            if (confirm("¿Está seguro de eliminar esta Persona?")) {
+                $.ajax({
+                    url: '/Persona/Eliminar/' + personaId, 
+                    type: 'POST',  
+                    success: function (response) {
+                        if (response.success) {
+                            $('#mensaje').html('<div class="alert alert-success">' + response.message + '</div>');
+                            $('tr').filter(function () {
+                                return $(this).find('td').first().text() == personaId;  
+                            }).remove();
+                        } else {
+                            $('#mensaje').html('<div class="alert alert-danger">' + response.message + '</div>');
+                        }
+                    },
+                    error: function () {
+                        $('#mensaje').html('<div class="alert alert-danger">Ocurrió un error al intentar eliminar la persona.</div>');
+                    }
+                });
+            }
+        });
         });
 
-        function confirmar() {
-            return confirm("¿Está seguro de eliminar esta Persona?");
-        }
     </script>
 }

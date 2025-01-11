@@ -16,23 +16,22 @@
         <div class="row">
             <div class="col-md-8 offset-md-2">
                 <h2>Nueva Persona</h2>
-                <form id="personaForm" method="post" asp-action="Nuevo" asp-controller="Persona">
-
+                <form id="personaForm">
                     <div class="mb-3">
                         <label for="Nombres" class="form-label">Nombres</label>
-                        <input type="text" class="form-control" asp-for="Nombres" placeholder="Ingrese los nombres" required>
+                        <input type="text" id="Nombres" name="Nombres" class="form-control" placeholder="Ingrese los nombres" required>
                     </div>
                     <div class="mb-3">
                         <label for="Apellidos" class="form-label">Apellidos</label>
-                        <input type="text" class="form-control" asp-for="Apellidos" placeholder="Ingrese los apellidos" required>
+                        <input type="text" id="Apellidos" name="Apellidos" class="form-control" placeholder="Ingrese los apellidos" required>
                     </div>
                     <div class="mb-3">
                         <label for="Identificacion" class="form-label">Identificación</label>
-                        <input type="text" class="form-control" asp-for="Identificacion" placeholder="Ingrese la identificación" maxlength="10" required>
+                        <input type="text" id="Identificacion" name="Identificacion" class="form-control" placeholder="Ingrese la identificación" maxlength="10" required>
                     </div>
                     <div class="mb-3">
                         <label for="Genero" class="form-label">Género</label>
-                        <select class="form-control" asp-for="Genero" required>
+                        <select id="Genero" name="Genero" class="form-control" required>
                             <option value="">Seleccione</option>
                             <option value="M">Masculino</option>
                             <option value="F">Femenino</option>
@@ -40,65 +39,91 @@
                     </div>
                     <div class="mb-3">
                         <label for="Fecha_nacimiento" class="form-label">Fecha de Nacimiento</label>
-                        <input type="date" class="form-control" asp-for="Fecha_nacimiento" required>
+                        <input type="date" id="Fecha_nacimiento" name="Fecha_nacimiento" class="form-control" required>
                     </div>
                     <div class="mb-3">
                         <label for="Contrasena" class="form-label">Contraseña</label>
-                        <input type="password" class="form-control" asp-for="Contrasena" placeholder="Ingrese la contraseña" minlength="6" maxlength="10" required>
+                        <input type="password" id="Contrasena" name="Contrasena" class="form-control" placeholder="Ingrese la contraseña" minlength="6" maxlength="10" required>
                     </div>
                     <div class="mb-3">
                         <label for="Activo" class="form-label">Activo</label>
-                        <select class="form-control" asp-for="Activo" required>
+                        <select id="Activo" name="Activo" class="form-control" required>
                             <option value="">Seleccione</option>
                             <option value="true">Sí</option>
                             <option value="false">No</option>
                         </select>
                     </div>
-                    <button type="submit" class="btn btn-primary">Guardar</button>
+                    <button type="button" id="saveBtn" class="btn btn-primary">Guardar</button>
                     <a class="btn btn-secondary" href="@Url.Action("Listar", "Persona")">Cancelar</a>
                 </form>
+                <div id="responseMessage" class="mt-3"></div>
             </div>
         </div>
     </div>
 
     <script>
-        $(document).ready(function () {
-            // Validaciones personalizadas con jQuery
-            $("#personaForm").on("submit", function () {
+             $(document).ready(function () {
+            $("#saveBtn").on("click", function () {
+                if (!validateForm()) {
+                    return;
+                }
+
+                var formData = $("#personaForm").serialize();
+
+                $.ajax({
+                    url: '/Persona/Nuevo',
+                    type: 'POST',
+                    data: formData,
+                    success: function (response) {
+                        if (response.success) {
+                            window.location.href = response.redirectUrl;
+                        } else {
+                            $("#responseMessage").html(
+                                '<div class="alert alert-danger">' + response.message + '</div>'
+                            );
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        $("#responseMessage").html(
+                            '<div class="alert alert-danger">Error al crear la persona: ' + xhr.responseText + '</div>'
+                        );
+                    }
+                });
+            });
+
+            function validateForm() {
                 let valid = true;
 
-                // Validar Nombres
                 if ($("#Nombres").val().trim() === "") {
                     alert("El campo Nombres es obligatorio.");
                     valid = false;
                 }
 
-                // Validar Apellidos
                 if ($("#Apellidos").val().trim() === "") {
                     alert("El campo Apellidos es obligatorio.");
                     valid = false;
                 }
 
-                // Validar Identificación
                 if ($("#Identificacion").val().length !== 10) {
                     alert("La Identificación debe tener 10 caracteres.");
                     valid = false;
                 }
 
-                // Validar Género
                 if ($("#Genero").val() === "") {
                     alert("Debe seleccionar un Género.");
                     valid = false;
                 }
 
-                // Validar Contraseña
-                if ($("#Contrasena").val().length < 6 || $("#Contrasena").val().length > 10) {
+                if (
+                    $("#Contrasena").val().length < 6 ||
+                    $("#Contrasena").val().length > 10
+                ) {
                     alert("La contraseña debe tener entre 6 y 10 caracteres.");
                     valid = false;
                 }
 
-                return valid; // Solo se envía si es válido
-            });
+                return valid;
+            }
         });
     </script>
 </body>
