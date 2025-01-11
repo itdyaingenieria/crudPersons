@@ -1,6 +1,6 @@
 using Prueba_YamaAndrade.Data;
 using Microsoft.EntityFrameworkCore;
-using Prueba_YamaAndrade.Services;  // Asegúrate de incluir el espacio de nombres correcto
+using Prueba_YamaAndrade.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
