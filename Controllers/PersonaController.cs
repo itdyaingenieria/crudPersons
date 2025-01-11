@@ -78,15 +78,23 @@ namespace Prueba_YamaAndrade.Controllers
         }
 
 
-        public IActionResult CrearTabla()
+        [HttpPost]
+        public JsonResult CrearTabla()
         {
-            // Generar un nombre único para la tabla (por ejemplo, basado en la fecha y hora)
-            string nuevoNombreTabla = "PersonasCopia_" + DateTime.Now.ToString("yyyyMMddHHmmss");
+            try
+            {
+                // Llama al servicio o lógica para crear la tabla
+                _personaService.CrearTablaPersona($"PersonaCopia_{DateTime.Now:yyyyMMddHHmmss}");
 
-            // Llamar al servicio para ejecutar el procedimiento almacenado
-            _personaService.CrearTablaPersona(nuevoNombreTabla);
-
-            return RedirectToAction("Listar"); // Redirigir a la lista de personas
+                // Devuelve un mensaje de éxito
+                return Json(new { success = true, message = "La copia de la tabla se realizó exitosamente." });
+            }
+            catch (Exception ex)
+            {
+                // Devuelve un mensaje de error
+                return Json(new { success = false, message = $"Error al crear la copia de la tabla: {ex.Message}" });
+            }
         }
+
     }
 }

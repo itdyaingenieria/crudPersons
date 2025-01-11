@@ -5,15 +5,19 @@
 }
 @model List<Prueba_YamaAndrade.Models.Persona>;
 
-    <div class="row">
-        <div class="col-sm-8 offset-sm-2">
-            <h2>Listado de Personas</h2>
-            <a asp-controller="Persona" asp-action="Nuevo" class="btn btn-success mb-3" title="Crear nueva persona">Nuevo</a>
-            <form method="post" action="@Url.Action("CrearTabla", "Persona")">
-                <button type="submit" class="btn btn-primary">Crear Copia Tabla</button>
-            </form>
-            <table class="table table-bordered">
-                <thead>
+<div class="row">
+    <div class="col-sm-8 offset-sm-2">
+        <h2>Listado de Personas</h2>
+        <a asp-controller="Persona" asp-action="Nuevo" class="btn btn-success mb-3" title="Crear nueva persona">Nuevo</a>
+        <form id="crearTablaForm" method="post" action="@Url.Action("CrearTabla", "Persona")">
+            <button type="button" id="crearTablaBtn" class="btn btn-primary">Crear Copia Tabla</button>
+        </form>
+
+        <!-- Contenedor para el mensaje -->
+        <div id="mensaje" class="mt-3"></div>
+
+        <table class="table table-bordered">
+            <thead>
                 <tr>
                     <th>Id</th>
                     <th>Nombres</th>
@@ -25,45 +29,61 @@
                     <th>Activo</th>
                     <th>Acciones</th>
                 </tr>
-                </thead>
-                <tbody>
-                    @foreach(var person in Model)
-                    {
-                        <tr>
-                            <td>@person.IdPersona</td>
-                            <td>@person.Nombres</td>
-                            <td>@person.Apellidos</td>
-                            <td>@person.Identificacion</td>
-                            <td>@person.Genero</td>
-                            <td>@person.Fecha_nacimiento.ToString("dd/MM/yyyy")</td>
-                            <td>@person.Contrasena</td>
-                            <td>@(person.Activo ? "SI" : "NO")</td>
+            </thead>
+            <tbody>
+                @foreach (var person in Model)
+                {
+                    <tr>
+                        <td>@person.IdPersona</td>
+                        <td>@person.Nombres</td>
+                        <td>@person.Apellidos</td>
+                        <td>@person.Identificacion</td>
+                        <td>@person.Genero</td>
+                        <td>@person.Fecha_nacimiento.ToString("dd/MM/yyyy")</td>
+                        <td>@person.Contrasena</td>
+                        <td>@(person.Activo ? "SI" : "NO")</td>
                         <td>
                             <a class="btn btn-primary btn-sm" href="/Persona/Editar/@person.IdPersona" title="Editar registro">
-                                <i class="fas fa-edit"></i> 
+                                <i class="fas fa-edit"></i>
                             </a>
-                            <a class="btn btn-danger btn-sm" 
-                            href="/Persona/Eliminar/@person.IdPersona" 
-                            title="Elimianr registro"
-                            onclick="return confirmar()"
-                            >
-                                <i class="fas fa-trash"></i> 
+                            <a class="btn btn-danger btn-sm" href="/Persona/Eliminar/@person.IdPersona" title="Eliminar registro" onclick="return confirmar()">
+                                <i class="fas fa-trash"></i>
                             </a>
                         </td>
-                        </tr>
-                    }
-                </tbody>
-
-            </table>
-
-        </div>
-
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
+</div>
 
-    @section Scripts{
-        <script>
-            function confirmar(){
-                return confirm("Esta seguro de eliminar esta Persona?")
-            }
-        </script>
-    }
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#crearTablaBtn').click(function () {
+                // Envía una solicitud AJAX para crear la tabla
+                $.ajax({
+                    url: $('#crearTablaForm').attr('action'),
+                    type: 'POST',
+                    success: function (response) {
+                        // Muestra el mensaje basado en la respuesta
+                        if (response.success) {
+                            $('#mensaje').html('<div class="alert alert-success">' + response.message + '</div>');
+                        } else {
+                            $('#mensaje').html('<div class="alert alert-danger">' + response.message + '</div>');
+                        }
+                    },
+                    error: function () {
+                        // Manejo de errores genéricos
+                        $('#mensaje').html('<div class="alert alert-danger">Ocurrió un error al intentar crear la copia de la tabla.</div>');
+                    }
+                });
+            });
+        });
+
+        function confirmar() {
+            return confirm("¿Está seguro de eliminar esta Persona?");
+        }
+    </script>
+}
